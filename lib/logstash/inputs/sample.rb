@@ -5,22 +5,13 @@ require "stud/interval"
 require "socket" # for Socket.gethostname
 require 'csv'
 
-# Generate a repeating message.
-#
-# This plugin is intented only as an example.
-
 class LogStash::Inputs::Sample < LogStash::Inputs::Base
   config_name "sample"
 
-  # If undefined, Logstash will complain, even if codec is unused.
   default :codec, "plain"
 
-  # The message string to use in the event.
   config :option, :validate => :string, :default => ""
 
-  # Set how frequently messages should be sent.
-  #
-  # The default, `1`, means send a message every second.
   config :interval, :validate => :number, :default => 30
 
   config :tmpfile, :validate => :string, :default => "/tmp/logstash-dstat.csv"
@@ -30,10 +21,9 @@ class LogStash::Inputs::Sample < LogStash::Inputs::Base
     @logger.info("Registering Sampl Input", :type => @type, :command => @option, :interval => @interval)
     @host = Socket.gethostname
     @command = 'dstat ' + option + ' --output ' + @tmpfile + ' 1 0'
-  end # def register
+  end
 
   def run(queue)
-    # we can abort the loop if stop? becomes true
     while !stop?
       touch_or_truncate @tmpfile
       lines = exec_dstat(@command, @tmpfile)
@@ -42,20 +32,11 @@ class LogStash::Inputs::Sample < LogStash::Inputs::Base
         decorate(event)
         queue << event
       }
-      # because the sleep interval can be big, when shutdown happens
-      # we want to be able to abort the sleep
-      # Stud.stoppable_sleep will frequently evaluate the given block
-      # and abort the sleep(@interval) if the return value is true
       Stud.stoppable_sleep(@interval) { stop? }
-    end # loop
-  end # def run
+    end
+  end
 
   def stop
-    # nothing to do in this case so it is not necessary to define stop
-    # examples of common "stop" tasks:
-    #  * close sockets (unblocking blocking reads/accepts)
-    #  * cleanup temporary files
-    #  * terminate spawned threads
   end
 
   def exec_dstat(cmd, tmpfile)
@@ -131,4 +112,4 @@ class LogStash::Inputs::Sample < LogStash::Inputs::Base
     key_map[first_key] ? key_map[first_key][second_key] : nil
   end
 
-end # class LogStash::Inputs::Example
+end
