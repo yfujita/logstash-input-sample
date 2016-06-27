@@ -3,6 +3,7 @@ require "logstash/inputs/base"
 require "logstash/namespace"
 require "stud/interval"
 require "socket" # for Socket.gethostname
+require 'csv'
 
 # Generate a repeating message.
 #
