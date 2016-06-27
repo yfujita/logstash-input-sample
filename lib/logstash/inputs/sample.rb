@@ -9,7 +9,7 @@ require "socket" # for Socket.gethostname
 # This plugin is intented only as an example.
 
 class LogStash::Inputs::Sample < LogStash::Inputs::Base
-  config_name "dstat"
+  config_name "sample"
 
   # If undefined, Logstash will complain, even if codec is unused.
   default :codec, "plain"
@@ -22,7 +22,7 @@ class LogStash::Inputs::Sample < LogStash::Inputs::Base
   # The default, `1`, means send a message every second.
   config :interval, :validate => :number, :default => 30
 
-  config :tmpfile, :validate => :string. :default => "/tmp/logstash-dstat.csv"
+  config :tmpfile, :validate => :string, :default => "/tmp/logstash-dstat.csv"
 
   public
   def register
