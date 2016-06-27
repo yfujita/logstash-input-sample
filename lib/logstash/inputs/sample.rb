@@ -28,7 +28,7 @@ class LogStash::Inputs::Sample < LogStash::Inputs::Base
   def register
     @logger.info("Registering Sampl Input", :type => @type, :command => @option, :interval => @interval)
     @host = Socket.gethostname
-    @command = 'dstat ' + option + ' --output ' + @tmpfile, + ' 1 0'
+    @command = 'dstat ' + option + ' --output ' + @tmpfile + ' 1 0'
   end # def register
 
   def run(queue)
